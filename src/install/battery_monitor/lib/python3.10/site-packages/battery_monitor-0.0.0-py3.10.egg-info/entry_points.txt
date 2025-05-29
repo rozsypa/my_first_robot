@@ -1,0 +1,3 @@
+[console_scripts]
+battery_publisher = battery_monitor.battery_publisher:main
+
