@@ -1,0 +1,15 @@
+# Virtual environment
+.venv_bot/
+
+# Python generated files
+__pycache__/
+*.pyc
+
+# Environment variables / secrets
+.env
+
+# Logs
+*.log
+
+# PyCharm
+.idea/
