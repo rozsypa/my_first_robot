@@ -14,37 +14,39 @@ class Robot:
         self.max_speed = 0
         self.state = RobotState.STOPPED
 
-    def set_state(self, new_state):
-        self.state = new_state
+    def _set_state(self, new_state):
 
-        if new_state == RobotState.RUNNING:
+        if self.state != RobotState.EMERGENCY and new_state == RobotState.RUNNING:
+            self.state = new_state
             self.left_motor.start()  ##nastartuje motory, pokud je state RUNNING. Pokud je cokoli jineho
             self.right_motor.start()
 
         elif new_state == RobotState.STOPPED:
+            self.state = new_state
             self.left_motor.stop()
             self.right_motor.stop()
 
         elif new_state == RobotState.EMERGENCY:
+            self.state = new_state
             self.left_motor.stop()
             self.right_motor.stop()
 
     def start(self):
         if self.state == RobotState.STOPPED:
-            self.set_state(RobotState.RUNNING)         ##nastartuje motory, pokud je state RUNNING. Pokud je cokoli jineho
+            self._set_state(RobotState.RUNNING)         ##nastartuje motory, pokud je state RUNNING. Pokud je cokoli jineho
                                                                     ##motor nenaskoci
 
     def stop(self):
         if self.state == RobotState.RUNNING:
-            self.set_state(RobotState.STOPPED)                ## prepne jakykoliv state do stavu STOPPED, pokud je running
+            self._set_state(RobotState.STOPPED)                ## prepne jakykoliv state do stavu STOPPED, pokud je running
 
 
     def emergency_stop(self):                   ## prepne jakykoliv state do state emergency
-        self.set_state(RobotState.EMERGENCY)
+        self._set_state(RobotState.EMERGENCY)
 
 
     def reset(self):
-        self.set_state(RobotState.STOPPED)
+        self._set_state(RobotState.STOPPED)
 
 
     def update(self,distance):
@@ -52,7 +54,7 @@ class Robot:
         new_max_speed = calculate_speed(distance) #definuje max rychlost fci vzdalenosti
 
         if new_max_speed is None:
-            self.set_state(RobotState.EMERGENCY)
+            self._set_state(RobotState.EMERGENCY)
 
         else:
             self.max_speed = new_max_speed
@@ -78,7 +80,7 @@ class Robot:
                 self.right_motor.set_speed(self.motor_right_speed)
 
         else:
-            self.set_state(RobotState.EMERGENCY)
+            self._set_state(RobotState.EMERGENCY)
 
 
 

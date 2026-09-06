@@ -2,7 +2,6 @@
 # for safety reasons
 from enum import Enum
 
-
 class RobotState(Enum):
     RUNNING=1
     STOPPED=2

@@ -25,15 +25,4 @@ class Motor:
 
 
 
-motor = Motor("left")           ## tady jen deklarujeme objekt. dostane name, ale enabled je False a speed = 0
-
-print(motor.name, motor.speed, motor.enabled)
-motor.start()
-motor.set_speed(-20)
-                                ## tady jsme nastartovali, tzn. motor je enabled = True a nastavili jsem speed
-print(motor.name, motor.speed, motor.enabled)
-
-motor.stop()
-                                ## tady se motory zastavily - enabled = False a speed = 0
-print(motor.name, motor.speed, motor.enabled)
 
