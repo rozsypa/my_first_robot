@@ -59,4 +59,4 @@ state != RUNNING -> motors stopped
 
 motors must not be enabled in any other state, than RUNNING
 
-EMERGENCY stata has higher priority in architecture, than movement commands
+EMERGENCY data has higher priority in architecture, than movement commands

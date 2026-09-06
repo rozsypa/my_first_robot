@@ -1,5 +1,5 @@
 ##kombinace tridy motor, calculate_speed and calculate_wheel_speed
-from _dbus_bindings import String
+
 
 from motor_safe import Motor
 from calculate_wheel_speed import calculate_wheel_speeds
@@ -14,15 +14,25 @@ class Robot:
         self.max_speed = 0
         self.state = RobotState.STOPPED
 
-    def set_state(self,new_state):
+    def set_state(self, new_state):
         self.state = new_state
+
+        if new_state == RobotState.RUNNING:
+            self.left_motor.start()  ##nastartuje motory, pokud je state RUNNING. Pokud je cokoli jineho
+            self.right_motor.start()
+
+        elif new_state == RobotState.STOPPED:
+            self.left_motor.stop()
+            self.right_motor.stop()
+
+        elif new_state == RobotState.EMERGENCY:
+            self.left_motor.stop()
+            self.right_motor.stop()
 
     def start(self):
         if self.state == RobotState.STOPPED:
-
             self.set_state(RobotState.RUNNING)         ##nastartuje motory, pokud je state RUNNING. Pokud je cokoli jineho
                                                                     ##motor nenaskoci
-
 
     def stop(self):
         if self.state == RobotState.RUNNING:
@@ -38,42 +48,43 @@ class Robot:
 
 
     def update(self,distance):
-        self.max_speed = calculate_speed(distance) #definuje max rychlost fci vzdalenosti
 
-    def drive(self, v,omega):       #definuje rychlosti jednotlivych motoru
-        if self.state == RobotState.RUNNING:
+        new_max_speed = calculate_speed(distance) #definuje max rychlost fci vzdalenosti
 
-            if type(v)!=String:
+        if new_max_speed is None:
+            self.set_state(RobotState.EMERGENCY)
 
+        else:
+            self.max_speed = new_max_speed
 
-                if v<= self.max_speed:
+    def drive(self,v,omega):#definuje rychlosti jednotlivych motoru
+        if isinstance(v,(int,float)) and isinstance(omega,(int,float)):
 
-                    self.motor_left_speed, self.motor_right_speed = calculate_wheel_speeds(v,omega,track_width=0.3)
+            if self.state == RobotState.RUNNING:
+
+                if abs(v)<= self.max_speed:
+
+                    safe_v = v
 
                 else:
-                    self.motor_left_speed, self.motor_right_speed = calculate_wheel_speeds(self.max_speed, omega, track_width=0.3)
+                    if v<0:
+                        safe_v = -self.max_speed
+
+                    else:
+                        safe_v = self.max_speed
+
+                self.motor_left_speed, self.motor_right_speed = calculate_wheel_speeds(safe_v, omega, track_width=0.3)
+                self.left_motor.set_speed(self.motor_left_speed)
+                self.right_motor.set_speed(self.motor_right_speed)
+
+        else:
+            self.set_state(RobotState.EMERGENCY)
 
 
-            else:
-                self.set_state(RobotState.EMERGENCY)    #chyba senzoru, hodnota None
-                print("invalid distance input,sensor error")
-
-
-            self.left_motor.set_speed(self.motor_left_speed)
-            self.right_motor.set_speed(self.motor_right_speed)
 
 
 
-eniac = Robot()
-print(eniac.state)
-eniac.start()
-print(eniac.state)
-eniac.emergency_stop()
-print(eniac.state)
-eniac.update(0.5)
-print(eniac.state)
-eniac.drive(2,0.4)
-eniac.reset()
-print(eniac.state)
+
+
 
 #print(eniac.left_motor.speed,eniac.right_motor.speed,eniac.max_speeniac.motor_left_speeded,eniac.left_motor.enabled, eniac.right_motor.enabled)
