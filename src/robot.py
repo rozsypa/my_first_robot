@@ -48,7 +48,6 @@ class Robot:
     def reset(self):
         self._set_state(RobotState.STOPPED)
 
-
     def update(self,distance):
 
         new_max_speed = calculate_speed(distance) #definuje max rychlost fci vzdalenosti
@@ -75,9 +74,9 @@ class Robot:
                     else:
                         safe_v = self.max_speed
 
-                self.motor_left_speed, self.motor_right_speed = calculate_wheel_speeds(safe_v, omega, track_width=0.3)
-                self.left_motor.set_speed(self.motor_left_speed)
-                self.right_motor.set_speed(self.motor_right_speed)
+                self.left_motor_speed, self.right_motor_speed = calculate_wheel_speeds(safe_v, omega, track_width=0.3)
+                self.left_motor.set_speed(self.left_motor_speed)
+                self.right_motor.set_speed(self.right_motor_speed)
 
         else:
             self._set_state(RobotState.EMERGENCY)
